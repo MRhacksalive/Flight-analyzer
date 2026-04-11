@@ -1,50 +1,81 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import FlightMap from '../components/FlightMap';
-import './Dashboard.css';
+import { MapContainer, TileLayer } from "react-leaflet";
+import { useState } from "react";
+import PlaneMarker from "../components/PlaneMarker";
+import "leaflet/dist/leaflet.css";
+import "./Dashboard.css";
 
 export default function Dashboard() {
-  const [flightNumber, setFlightNumber] = useState('');
-  const [data, setData] = useState([]);
+  const [flightNo, setFlightNo] = useState("");
+  const [position, setPosition] = useState([20, 77]);
+  const [flightData, setFlightData] = useState(null);
 
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/api/flights/${flightNumber}`
-      );
-      setData(res.data);
-    } catch (err) {
-      console.error(err);
-      alert('Error fetching flight data');
+  // 🔑 PUT YOUR API KEY HERE
+  const API_KEY = "91e3efea2cb047fc37276c702ea01cda";
+
+  const fetchFlight = async () => {
+  try {
+    const res = await fetch(
+      `http://api.aviationstack.com/v1/flights?access_key=${API_KEY}&flight_iata=${flightNo}`
+    );
+
+    const data = await res.json();
+    console.log("API DATA:", data);
+
+    if (!data.data || data.data.length === 0) {
+      alert("Flight not found ❌ Try EK431, AI202, 6E202");
+      return;
     }
-  };
+
+    const flight = data.data.find((f) => f.live !== null);
+
+    if (!flight) {
+      alert("No live tracking available for this flight ❌");
+      return;
+    }
+
+    const lat = flight.live.latitude;
+    const lng = flight.live.longitude;
+
+    setPosition([lat, lng]);
+
+    setFlightData({
+      callsign: flight.flight.iata,
+      altitude: flight.live.altitude,
+      speed: flight.live.speed_horizontal,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
-    <div className="container">
-      <h1 className="title">✈️ Flight Tracker</h1>
+    <div className="dashboard">
+      {/* PANEL */}
+      <div className="panel">
+         Flight Tracker
 
-      <div className="search-box">
         <input
-          placeholder="Enter Flight (e.g. AI)"
-          value={flightNumber}
-          onChange={(e) => setFlightNumber(e.target.value)}
+          type="text"
+          value={flightNo}
+          onChange={(e) => setFlightNo(e.target.value)}
+          placeholder="Enter Flight (AI202)"
         />
-        <button onClick={fetchData}>Track</button>
+
+        <button onClick={fetchFlight}>Track</button>
+
+        <p>
+          {flightData
+            ? `Tracking: ${flightData.callsign}`
+            : "Enter flight number"}
+        </p>
       </div>
 
-      {data.length > 0 && <FlightMap flights={data} />}
+      {/* MAP */}
+      <MapContainer center={position} zoom={5} className="map">
+        <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
 
-      <div className="cards">
-        {data.map((flight, index) => (
-          <div key={index} className="card">
-            <p><b>{flight.callsign}</b></p>
-            <p>{flight.country}</p>
-            <p>📍 {flight.latitude}, {flight.longitude}</p>
-            <p>🛫 Alt: {Math.round(flight.altitude)}</p>
-            <p>⚡ Speed: {Math.round(flight.velocity)}</p>
-          </div>
-        ))}
-      </div>
+        <PlaneMarker position={position} flightData={flightData} />
+      </MapContainer>
     </div>
   );
 }

@@ -1,87 +1,58 @@
-/* Background */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f172a, #020617);
+.dashboard {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+.panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  color: white;
+  z-index: 1000;
+}
+
+/* Input */
+.panel input {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  width: 150px;
+}
+
+/* Button */
+.panel button {
+  margin-top: 10px;
+  margin-left: 8px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #00c6ff;
+  color: black;
+  cursor: pointer;
+}
+
+.panel button:hover {
+  background: #00f7ff;
+}
+
+/* Popup */
+.leaflet-popup-content-wrapper {
+  background: #111;
   color: white;
 }
 
-/* Container */
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px;
-  text-align: center;
-}
-
-/* Title */
-.title {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  animation: fadeIn 1s ease;
-}
-
-/* Search */
-.search-box {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.search-box input {
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  width: 250px;
-  outline: none;
-}
-
-.search-box button {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 10px;
-  background: #38bdf8;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.search-box button:hover {
-  background: #0ea5e9;
-  transform: scale(1.05);
-}
-
-/* Cards grid */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
-}
-
-/* Glass cards */
-.card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  padding: 15px;
-  border-radius: 15px;
-  transition: all 0.3s ease;
-  animation: slideUp 0.5s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.leaflet-popup-tip {
+  background: #111;
 }
