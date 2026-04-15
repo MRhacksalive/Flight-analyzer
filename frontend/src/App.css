@@ -40,3 +40,18 @@ button {
   margin-top: 10px;
   border-radius: 8px;
 }
+body::before {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,0,0,0.08) 0%, transparent 60%);
+  animation: floatBg 15s linear infinite;
+  z-index: -1;
+}
+
+@keyframes floatBg {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(-10%, -10%); }
+  100% { transform: translate(0,0); }
+}
